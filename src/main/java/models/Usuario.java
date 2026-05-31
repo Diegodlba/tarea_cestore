@@ -8,7 +8,7 @@ public class Usuario {
     private String password;
     private String pais;
 
-    public Usuario() {
+    /*public Usuario() {
     }
 
     public Usuario(String nombre, String apellido, String email, String password, String pais) {
@@ -57,5 +57,5 @@ public class Usuario {
 
     public void setPais(String pais) {
         this.pais = pais;
-    }
+    }*/
 }
