@@ -191,3 +191,10 @@ Al seleccionar la opción “Cerrar sesión”, el sistema muestra una ventana m
 
 
 
+## Diagrama UML
+![Diagrama UML](docs/images/UML.drawio.png)
+
+
+
+
+
