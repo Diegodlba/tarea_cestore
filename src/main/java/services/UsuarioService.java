@@ -1,57 +1,51 @@
 package services;
 
-import models.Administrador;
-import models.Tester;
-import models.Usuario;
+import models.*;
+
+import java.util.ArrayList;
+import java.util.List;
 
 public class UsuarioService {
-    private Usuario[] usuarios;
+
+    private List<Usuario> usuarios;
 
     public UsuarioService() {
 
-        usuarios = new Usuario[10];
+        usuarios = new ArrayList<>();
 
-        usuarios[0] = new Administrador(
-                "Diego",
-                "De la Barrera",
-                "diegodlba@admin.com",
-                "1234",
-                "Uruguay",
-                "superAdmin"
-                );
-
-        usuarios[1] = new Tester(
-                "Rodrigo",
-                "de la Barrera",
-                "rodrigo@tester.com",
-                "1234",
-                "Uruguay",
-                "testerManual"
+        usuarios.add(
+                new Administrador(
+                        "Diego",
+                        "De la Barrera",
+                        "diegodlba@admin.com",
+                        "1234",
+                        "Uruguay",
+                        "superAdmin"
+                )
         );
 
+        usuarios.add(
+                new Tester(
+                        "Rodrigo",
+                        "De la Barrera",
+                        "rodrigo@tester.com",
+                        "1234",
+                        "Uruguay",
+                        "testerManual"
+                )
+        );
     }
 
     public void addUsuario(Usuario usuario) {
-
-        for (int i = 0; i < usuarios.length; i++) {
-
-            if (usuarios[i] == null) {
-
-                usuarios[i] = usuario;
-                return;
-            }
-        }
-
-        System.out.println("No hay espacio para más usuarios");
+        usuarios.add(usuario);
     }
 
     public Usuario login(String email, String password) {
 
         for (Usuario usuario : usuarios) {
 
-            if (usuario != null &&
-                    usuario.getEmail().equals(email) &&
-                    usuario.getPassword().equals(password)) {
+            if (usuario.getEmail().equals(email)
+                    && usuario.getPassword().equals(password)) {
 
                 return usuario;
             }
@@ -64,14 +58,38 @@ public class UsuarioService {
 
         for (Usuario usuario : usuarios) {
 
-            if (usuario != null &&
-                    usuario.getEmail().equals(email)) {
-
+            if (usuario.getEmail().equals(email)) {
                 return true;
             }
         }
 
         return false;
+    }
+
+    public void listarUsuarios() {
+
+        if (usuarios.isEmpty()) {
+            System.out.println("No hay usuarios");
+            return;
+        }
+
+        for (Usuario usuario : usuarios) {
+
+            System.out.println("----------------");
+            System.out.println(usuario);
+        }
+    }
+
+    public Usuario buscarUsuario(String email) {
+
+        for (Usuario usuario : usuarios) {
+
+            if (usuario.getEmail().equals(email)) {
+                return usuario;
+            }
+        }
+
+        return null;
     }
 
 }

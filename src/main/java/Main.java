@@ -19,6 +19,8 @@ public class Main {
             System.out.println("\nSeleccione una acción:");
             System.out.println("1 - Registro");
             System.out.println("2 - Login");
+            System.out.println("3 - Listar usuarios");
+            System.out.println("4 - Buscar usuario");
             System.out.println("0 - Salir");
             System.out.print("Digita el número de la opción: ");
 
@@ -32,6 +34,14 @@ public class Main {
             } else if (opcion == 2) {
 
                 login();
+
+            } else if (opcion == 3) {
+
+                usuarioService.listarUsuarios();
+
+            } else if (opcion == 4) {
+
+                buscarUsuario();
 
             } else if (opcion == 0) {
 
@@ -59,6 +69,7 @@ public class Main {
         String email = scanner.nextLine();
 
         if (usuarioService.validateExistingUser(email)) {
+
             System.out.println("Ya existe un usuario con ese email");
             return;
         }
@@ -132,17 +143,33 @@ public class Main {
 
         if (usuario != null) {
 
-            System.out.println("Bienvenido " + usuario.getNombre());
+            System.out.println("\nBienvenido " + usuario.getNombre());
 
-            if (usuario instanceof Administrador) {
-                System.out.println("Tipo de usuario: Administrador");
-            } else if (usuario instanceof Tester) {
-                System.out.println("Tipo de usuario: Tester");
-            }
+            System.out.println("Tipo: " + usuario.mostrarTipo());
 
         } else {
 
             System.out.println("Email o contraseña incorrectos");
+        }
+    }
+
+    public static void buscarUsuario() {
+
+        System.out.println("\n=== BUSCAR USUARIO ===");
+
+        System.out.print("Ingrese email: ");
+        String email = scanner.nextLine();
+
+        Usuario usuario = usuarioService.buscarUsuario(email);
+
+        if (usuario != null) {
+
+            System.out.println("\nUsuario encontrado:");
+            System.out.println(usuario);
+
+        } else {
+
+            System.out.println("Usuario no encontrado");
         }
     }
 }
