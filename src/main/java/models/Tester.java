@@ -4,6 +4,7 @@ public class Tester extends Usuario {
 
     private String rol;
 
+
     public Tester(String nombre,
                   String apellido,
                   String email,
@@ -16,8 +17,16 @@ public class Tester extends Usuario {
         this.rol = rol;
     }
 
+
     @Override
     public String mostrarTipo() {
+
         return "Tester - " + rol;
+    }
+
+
+    public String getRol() {
+
+        return rol;
     }
 }

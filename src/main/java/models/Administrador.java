@@ -2,22 +2,36 @@ package models;
 
 public class Administrador extends Usuario {
 
-    private String type;
+    private String nivel;
+
 
     public Administrador(String nombre,
                          String apellido,
                          String email,
                          String password,
                          String pais,
-                         String type) {
+                         String nivel) {
 
         super(nombre, apellido, email, password, pais);
 
-        this.type = type;
+        this.nivel = nivel;
     }
+
 
     @Override
     public String mostrarTipo() {
-        return "Administrador - " + type;
+
+        return "Administrador - " + nivel;
+    }
+
+    @Override
+    public boolean puedeGestionarUsuarios() {
+
+        return true;
+    }
+
+    public String getNivel() {
+
+        return nivel;
     }
 }

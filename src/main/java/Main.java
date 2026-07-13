@@ -1,175 +1,434 @@
+import exceptions.DatosInvalidosException;
+import exceptions.EmailDuplicadoException;
+import exceptions.UsuarioNoEncontradoException;
+
 import models.Administrador;
 import models.Tester;
 import models.Usuario;
+
 import services.UsuarioService;
 
+import java.util.InputMismatchException;
 import java.util.Scanner;
+
 
 public class Main {
 
+
     static Scanner scanner = new Scanner(System.in);
-    static UsuarioService usuarioService = new UsuarioService();
+
+    static UsuarioService usuarioService =
+            UsuarioService.getInstance();
+
+
+    static Usuario usuarioLogueado = null;
+
 
     public static void main(String[] args) {
 
+
         boolean salir = false;
+
 
         while (!salir) {
 
-            System.out.println("\nSeleccione una acción:");
-            System.out.println("1 - Registro");
-            System.out.println("2 - Login");
-            System.out.println("3 - Listar usuarios");
-            System.out.println("4 - Buscar usuario");
-            System.out.println("0 - Salir");
-            System.out.print("Digita el número de la opción: ");
 
-            int opcion = scanner.nextInt();
-            scanner.nextLine();
+            try {
 
-            if (opcion == 1) {
 
-                registrarUsuario();
+                System.out.println("\nSeleccione una acción:");
+                System.out.println("1 - Login");
+                System.out.println("2 - Registrar Administrador");
+                System.out.println("3 - Registrar Tester");
+                System.out.println("4 - Listar usuarios");
+                System.out.println("5 - Buscar usuario");
+                System.out.println("6 - Cerrar sesión");
+                System.out.println("0 - Salir");
 
-            } else if (opcion == 2) {
 
-                login();
+                System.out.print(
+                        "Digita el número de la opción: "
+                );
 
-            } else if (opcion == 3) {
 
-                usuarioService.listarUsuarios();
+                int opcion = scanner.nextInt();
+                scanner.nextLine();
 
-            } else if (opcion == 4) {
 
-                buscarUsuario();
+                if (opcion == 1) {
 
-            } else if (opcion == 0) {
 
-                salir = true;
-                System.out.println("Saliste con éxito");
+                    login();
 
-            } else {
 
-                System.out.println("Selecciona una opción válida");
+                } else if (opcion == 2) {
+
+
+                    registrarAdministrador();
+
+
+                } else if (opcion == 3) {
+
+
+                    registrarTester();
+
+
+                } else if (opcion == 4) {
+
+
+                    if (puedeGestionarUsuarios()) {
+
+                        usuarioService.listarUsuarios();
+                    }
+
+
+                } else if (opcion == 5) {
+
+
+                    if (puedeGestionarUsuarios()) {
+
+                        buscarUsuario();
+                    }
+
+
+                } else if (opcion == 6) {
+
+
+                    cerrarSesion();
+
+
+                } else if (opcion == 0) {
+
+
+                    salir = true;
+
+
+                    System.out.println(
+                            "Saliste con éxito."
+                    );
+
+
+                } else {
+
+
+                    System.out.println(
+                            "Selecciona una opción válida."
+                    );
+                }
+
+
+            } catch (InputMismatchException e) {
+
+
+                System.out.println(
+                        "Debe ingresar un número."
+                );
+
+                scanner.nextLine();
+
+
+            } catch (EmailDuplicadoException |
+                     UsuarioNoEncontradoException |
+                     DatosInvalidosException e) {
+
+
+                System.out.println(
+                        "Error: " + e.getMessage()
+                );
+
+
+            } catch (Exception e) {
+
+
+                System.out.println(
+                        "Error inesperado: "
+                                + e.getMessage()
+                );
             }
+
         }
+
     }
 
-    public static void registrarUsuario() {
 
-        System.out.println("\n=== REGISTRO ===");
+    public static void registrarAdministrador()
+            throws EmailDuplicadoException {
+
+
+        System.out.println(
+                "\n=== REGISTRAR ADMINISTRADOR ==="
+        );
+
 
         System.out.print("Nombre: ");
         String nombre = scanner.nextLine();
 
+
         System.out.print("Apellido: ");
         String apellido = scanner.nextLine();
 
-        System.out.print("Email: ");
-        String email = scanner.nextLine();
 
-        if (usuarioService.validateExistingUser(email)) {
+        String email;
 
-            System.out.println("Ya existe un usuario con ese email");
-            return;
-        }
+        do {
+
+            System.out.print("Email: ");
+
+            email = scanner.nextLine();
+
+
+            if (usuarioService.existeEmail(email)) {
+
+                System.out.println(
+                        "Ya existe un usuario con ese email. Ingrese otro."
+                );
+            }
+
+
+        } while (usuarioService.existeEmail(email));
+
 
         System.out.print("Password: ");
         String password = scanner.nextLine();
+
 
         System.out.print("País: ");
         String pais = scanner.nextLine();
 
-        System.out.println("\nTipo de usuario:");
-        System.out.println("1 - Administrador");
-        System.out.println("2 - Tester");
-        System.out.print("Seleccione una opción: ");
 
-        int tipoUsuario = scanner.nextInt();
-        scanner.nextLine();
+        System.out.print("Nivel administrador: ");
+        String nivel = scanner.nextLine();
 
-        Usuario usuario;
 
-        if (tipoUsuario == 1) {
+        Administrador administrador =
+                new Administrador(
+                        nombre,
+                        apellido,
+                        email,
+                        password,
+                        pais,
+                        nivel
+                );
 
-            System.out.print("Nivel de administrador: ");
-            String nivelAdmin = scanner.nextLine();
 
-            usuario = new Administrador(
-                    nombre,
-                    apellido,
-                    email,
-                    password,
-                    pais,
-                    nivelAdmin
-            );
+        usuarioService.addUsuario(administrador);
 
-        } else if (tipoUsuario == 2) {
 
-            System.out.print("Tipo de tester: ");
-            String tipoTester = scanner.nextLine();
+        System.out.println(
+                "Administrador registrado correctamente."
+        );
+    }
 
-            usuario = new Tester(
-                    nombre,
-                    apellido,
-                    email,
-                    password,
-                    pais,
-                    tipoTester
-            );
 
-        } else {
+    public static void registrarTester()
+            throws EmailDuplicadoException {
 
-            System.out.println("Tipo de usuario inválido");
+
+        if (!puedeGestionarUsuarios()) {
+
             return;
         }
 
-        usuarioService.addUsuario(usuario);
 
-        System.out.println("Usuario registrado correctamente");
-    }
+        System.out.println(
+                "\n=== REGISTRAR TESTER ==="
+        );
 
-    public static void login() {
 
-        System.out.println("\n=== LOGIN ===");
+        System.out.print("Nombre: ");
+        String nombre = scanner.nextLine();
 
-        System.out.print("Email: ");
-        String email = scanner.nextLine();
+
+        System.out.print("Apellido: ");
+        String apellido = scanner.nextLine();
+
+
+        String email;
+
+
+        do {
+
+            System.out.print("Email: ");
+
+            email = scanner.nextLine();
+
+
+            if (usuarioService.existeEmail(email)) {
+
+
+                System.out.println(
+                        "Ya existe un usuario con ese email. Ingrese otro."
+                );
+            }
+
+
+        } while (usuarioService.existeEmail(email));
+
 
         System.out.print("Password: ");
         String password = scanner.nextLine();
 
-        Usuario usuario = usuarioService.login(email, password);
 
-        if (usuario != null) {
+        System.out.print("País: ");
+        String pais = scanner.nextLine();
 
-            System.out.println("\nBienvenido " + usuario.getNombre());
 
-            System.out.println("Tipo: " + usuario.mostrarTipo());
+        System.out.print("Rol tester: ");
+        String rol = scanner.nextLine();
 
-        } else {
 
-            System.out.println("Email o contraseña incorrectos");
-        }
+        Tester tester =
+                new Tester(
+                        nombre,
+                        apellido,
+                        email,
+                        password,
+                        pais,
+                        rol
+                );
+
+
+        usuarioService.addUsuario(tester);
+
+
+        System.out.println(
+                "Tester registrado correctamente."
+        );
+
     }
 
-    public static void buscarUsuario() {
 
-        System.out.println("\n=== BUSCAR USUARIO ===");
+    public static void login() {
 
-        System.out.print("Ingrese email: ");
+
+        System.out.println("\n=== LOGIN ===");
+
+
+        System.out.print("Email: ");
         String email = scanner.nextLine();
 
-        Usuario usuario = usuarioService.buscarUsuario(email);
+
+        System.out.print("Password: ");
+        String password = scanner.nextLine();
+
+
+        Usuario usuario =
+                usuarioService.login(email, password);
+
 
         if (usuario != null) {
 
-            System.out.println("\nUsuario encontrado:");
-            System.out.println(usuario);
+
+            usuarioLogueado = usuario;
+
+
+            System.out.println(
+                    "\nBienvenido "
+                            + usuario.getNombre()
+            );
+
+
+            System.out.println(
+                    "Tipo: "
+                            + usuario.mostrarTipo()
+            );
+
 
         } else {
 
-            System.out.println("Usuario no encontrado");
+
+            System.out.println(
+                    "Email o contraseña incorrectos."
+            );
         }
+
     }
+
+
+    public static void buscarUsuario()
+            throws UsuarioNoEncontradoException {
+
+
+        System.out.println(
+                "\n=== BUSCAR USUARIO ==="
+        );
+
+
+        System.out.print(
+                "Ingrese email: "
+        );
+
+
+        String email = scanner.nextLine();
+
+
+        Usuario usuario =
+                usuarioService.buscarUsuario(email);
+
+
+        System.out.println(
+                "\nUsuario encontrado:"
+        );
+
+
+        System.out.println(usuario);
+
+    }
+
+
+    public static void cerrarSesion() {
+
+
+        if (usuarioLogueado == null) {
+
+
+            System.out.println(
+                    "No hay sesión iniciada."
+            );
+
+
+            return;
+        }
+
+
+        usuarioLogueado = null;
+
+
+        System.out.println(
+                "Sesión cerrada correctamente."
+        );
+
+    }
+
+
+    public static boolean puedeGestionarUsuarios() {
+
+
+        if (usuarioLogueado == null) {
+
+
+            System.out.println(
+                    "Debe iniciar sesión."
+            );
+
+
+            return false;
+        }
+
+
+        if (!usuarioLogueado.puedeGestionarUsuarios()) {
+
+
+            System.out.println(
+                    "No tiene permisos para realizar esta acción."
+            );
+
+
+            return false;
+        }
+
+
+        return true;
+    }
+
 }

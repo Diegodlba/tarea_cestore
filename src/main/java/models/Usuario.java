@@ -8,8 +8,11 @@ public abstract class Usuario {
     private String password;
     private String pais;
 
-    public Usuario(String nombre, String apellido,
-                   String email, String password,
+
+    public Usuario(String nombre,
+                   String apellido,
+                   String email,
+                   String password,
                    String pais) {
 
         this.nombre = nombre;
@@ -19,30 +22,44 @@ public abstract class Usuario {
         this.pais = pais;
     }
 
+
     public abstract String mostrarTipo();
+
+
+    public boolean puedeGestionarUsuarios() {
+
+        return false;
+    }
+
 
     public String getNombre() {
         return nombre;
     }
 
+
     public String getApellido() {
         return apellido;
     }
+
 
     public String getEmail() {
         return email;
     }
 
+
     public String getPassword() {
         return password;
     }
+
 
     public String getPais() {
         return pais;
     }
 
+
     @Override
     public String toString() {
+
         return "Nombre: " + nombre +
                 " " + apellido +
                 "\nEmail: " + email +
