@@ -26,128 +26,138 @@ public class Main {
 
     public static void main(String[] args) {
 
-
         boolean salir = false;
-
 
         while (!salir) {
 
-
             try {
 
-
                 System.out.println("\nSeleccione una acción:");
-                System.out.println("1 - Login");
-                System.out.println("2 - Registrar Administrador");
-                System.out.println("3 - Registrar Tester");
-                System.out.println("4 - Listar usuarios");
-                System.out.println("5 - Buscar usuario");
-                System.out.println("6 - Cerrar sesión");
-                System.out.println("0 - Salir");
 
+                if (usuarioLogueado == null) {
 
-                System.out.print(
-                        "Digita el número de la opción: "
-                );
+                    System.out.println("1 - Login");
+                    System.out.println("2 - Registrar Administrador");
+                    System.out.println("0 - Salir");
 
+                } else if (usuarioLogueado.puedeGestionarUsuarios()) {
+
+                    System.out.println("3 - Registrar Tester");
+                    System.out.println("4 - Listar usuarios");
+                    System.out.println("5 - Buscar usuario");
+                    System.out.println("6 - Cerrar sesión");
+                    System.out.println("0 - Salir");
+
+                } else {
+
+                    System.out.println("6 - Cerrar sesión");
+                    System.out.println("0 - Salir");
+                }
+
+                System.out.print("Digita el número de la opción: ");
 
                 int opcion = scanner.nextInt();
                 scanner.nextLine();
 
 
-                if (opcion == 1) {
+                //Sin usuario logueado
+                if (usuarioLogueado == null) {
 
+                    if (opcion == 1) {
 
-                    login();
+                        login();
 
+                    } else if (opcion == 2) {
 
-                } else if (opcion == 2) {
+                        registrarAdministrador();
 
+                    } else if (opcion == 0) {
 
-                    registrarAdministrador();
+                        salir = true;
 
+                        System.out.println("Saliste con éxito.");
 
-                } else if (opcion == 3) {
+                    } else {
 
+                        System.out.println(
+                                "Debe iniciar sesión para acceder a esa opción."
+                        );
+                    }
 
-                    registrarTester();
+                    //Cuando está logueado un administrador.
+                } else if (usuarioLogueado.puedeGestionarUsuarios()) {
 
+                    if (opcion == 3) {
 
-                } else if (opcion == 4) {
+                        registrarTester();
 
-
-                    if (puedeGestionarUsuarios()) {
+                    } else if (opcion == 4) {
 
                         usuarioService.listarUsuarios();
-                    }
 
-
-                } else if (opcion == 5) {
-
-
-                    if (puedeGestionarUsuarios()) {
+                    } else if (opcion == 5) {
 
                         buscarUsuario();
+
+                    } else if (opcion == 6) {
+
+                        cerrarSesion();
+
+                    } else if (opcion == 0) {
+
+                        salir = true;
+
+                        System.out.println("Saliste con éxito.");
+
+                    } else {
+
+                        System.out.println(
+                                "Seleccione una opción válida."
+                        );
                     }
 
 
-                } else if (opcion == 6) {
-
-
-                    cerrarSesion();
-
-
-                } else if (opcion == 0) {
-
-
-                    salir = true;
-
-
-                    System.out.println(
-                            "Saliste con éxito."
-                    );
-
-
+                    //Cuando está logueado un tester
                 } else {
 
+                    if (opcion == 6) {
 
-                    System.out.println(
-                            "Selecciona una opción válida."
-                    );
+                        cerrarSesion();
+
+                    } else if (opcion == 0) {
+
+                        salir = true;
+
+                        System.out.println("Saliste con éxito.");
+
+                    } else {
+
+                        System.out.println(
+                                "No tiene permisos para realizar esa acción."
+                        );
+                    }
+
                 }
-
 
             } catch (InputMismatchException e) {
 
-
-                System.out.println(
-                        "Debe ingresar un número."
-                );
+                System.out.println("Debe ingresar un número.");
 
                 scanner.nextLine();
-
 
             } catch (EmailDuplicadoException |
                      UsuarioNoEncontradoException |
                      DatosInvalidosException e) {
 
-
-                System.out.println(
-                        "Error: " + e.getMessage()
-                );
-
+                System.out.println("Error: " + e.getMessage());
 
             } catch (Exception e) {
 
-
                 System.out.println(
-                        "Error inesperado: "
-                                + e.getMessage()
+                        "Error inesperado: " + e.getMessage()
                 );
             }
-
         }
-
     }
 
 
