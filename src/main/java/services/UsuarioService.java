@@ -214,4 +214,34 @@ public class UsuarioService {
 
     }
 
+    public void editarPerfil(Usuario usuario,
+                             String nombre,
+                             String apellido,
+                             String pais,
+                             String password) {
+
+        if (nombre == null || nombre.trim().isEmpty()) {
+            throw new DatosInvalidosException("El nombre es obligatorio.");
+        }
+
+        if (apellido == null || apellido.trim().isEmpty()) {
+            throw new DatosInvalidosException("El apellido es obligatorio.");
+        }
+
+        if (pais == null || pais.trim().isEmpty()) {
+            throw new DatosInvalidosException("El país es obligatorio.");
+        }
+
+        if (password == null || password.length() < 6) {
+            throw new DatosInvalidosException(
+                    "La contraseña debe tener mínimo 6 caracteres."
+            );
+        }
+
+        usuario.setNombre(nombre);
+        usuario.setApellido(apellido);
+        usuario.setPais(pais);
+        usuario.setPassword(password);
+    }
+
 }

@@ -45,12 +45,14 @@ public class Main {
                     System.out.println("3 - Registrar Tester");
                     System.out.println("4 - Listar usuarios");
                     System.out.println("5 - Buscar usuario");
-                    System.out.println("6 - Cerrar sesión");
+                    System.out.println("6 - Editar perfil");
+                    System.out.println("7 - Cerrar sesión");
                     System.out.println("0 - Salir");
 
                 } else {
 
-                    System.out.println("6 - Cerrar sesión");
+                    System.out.println("6 - Editar perfil");
+                    System.out.println("7 - Cerrar sesión");
                     System.out.println("0 - Salir");
                 }
 
@@ -101,6 +103,10 @@ public class Main {
 
                     } else if (opcion == 6) {
 
+                        editarPerfil();
+
+                    } else if (opcion == 7) {
+
                         cerrarSesion();
 
                     } else if (opcion == 0) {
@@ -121,6 +127,10 @@ public class Main {
                 } else {
 
                     if (opcion == 6) {
+
+                        editarPerfil();
+
+                    } else if (opcion == 7) {
 
                         cerrarSesion();
 
@@ -439,6 +449,33 @@ public class Main {
 
 
         return true;
+    }
+
+    public static void editarPerfil() {
+
+        System.out.println("\n=== EDITAR PERFIL ===");
+
+        System.out.print("Nuevo nombre: ");
+        String nombre = scanner.nextLine();
+
+        System.out.print("Nuevo apellido: ");
+        String apellido = scanner.nextLine();
+
+        System.out.print("Nuevo país: ");
+        String pais = scanner.nextLine();
+
+        System.out.print("Nueva contraseña: ");
+        String password = scanner.nextLine();
+
+        usuarioService.editarPerfil(
+                usuarioLogueado,
+                nombre,
+                apellido,
+                pais,
+                password
+        );
+
+        System.out.println("Perfil actualizado correctamente.");
     }
 
 }
